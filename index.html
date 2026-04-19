@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ShopSwift — Shop Everything</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════
+       HEADER / NAVBAR
+  ═══════════════════════════════════════════ -->
+  <header id="site-header">
+    <div class="header-inner">
+      <!-- Logo -->
+      <a class="logo" href="#" onclick="showPage('home')">
+        <span class="logo-icon">⚡</span>
+        <span class="logo-text">Shop<em>Swift</em></span>
+      </a>
+
+      <!-- Search bar -->
+      <div class="search-bar">
+        <select id="category-filter" onchange="filterProducts()">
+          <option value="All">All Categories</option>
+          <option value="Electronics">Electronics</option>
+          <option value="Computers">Computers</option>
+          <option value="Footwear">Footwear</option>
+          <option value="Kitchen">Kitchen</option>
+          <option value="Books & Readers">Books & Readers</option>
+          <option value="Clothing">Clothing</option>
+          <option value="Home">Home</option>
+        </select>
+        <input type="text" id="search-input" placeholder="Search products, brands and more…" oninput="filterProducts()" />
+        <button class="search-btn" onclick="filterProducts()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        </button>
+      </div>
+
+      <!-- Nav actions -->
+      <nav class="header-actions">
+        <button class="nav-btn" onclick="showPage('home')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          <span>Home</span>
+        </button>
+        <button class="nav-btn cart-btn" onclick="showPage('cart')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+          <span>Cart</span>
+          <span class="cart-badge" id="cart-badge">0</span>
+        </button>
+      </nav>
+    </div>
+
+    <!-- Category ribbon -->
+    <div class="category-ribbon">
+      <div class="ribbon-inner" id="ribbon-categories">
+        <button class="ribbon-btn active" onclick="setRibbonCategory('All', this)">All</button>
+        <button class="ribbon-btn" onclick="setRibbonCategory('Electronics', this)">Electronics</button>
+        <button class="ribbon-btn" onclick="setRibbonCategory('Computers', this)">Computers</button>
+        <button class="ribbon-btn" onclick="setRibbonCategory('Footwear', this)">Footwear</button>
+        <button class="ribbon-btn" onclick="setRibbonCategory('Kitchen', this)">Kitchen</button>
+        <button class="ribbon-btn" onclick="setRibbonCategory('Books &amp; Readers', this)">Books & Readers</button>
+        <button class="ribbon-btn" onclick="setRibbonCategory('Clothing', this)">Clothing</button>
+        <button class="ribbon-btn" onclick="setRibbonCategory('Home', this)">Home</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════════════════════
+       PAGE: HOME / PRODUCT LISTING
+  ═══════════════════════════════════════════ -->
+  <main id="page-home" class="page active">
+    <!-- Hero Banner -->
+    <section class="hero">
+      <div class="hero-content">
+        <p class="hero-eyebrow">Flash Sale — Ends Tonight</p>
+        <h1 class="hero-title">Up to <em>70% off</em><br/>on top brands</h1>
+        <p class="hero-sub">Free delivery on orders above ₹499 · Easy 30-day returns</p>
+        <button class="btn-primary hero-cta" onclick="document.getElementById('products-grid').scrollIntoView({behavior:'smooth'})">
+          Shop Now →
+        </button>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-blob"></div>
+        <div class="hero-stat"><span class="stat-num">8M+</span><span class="stat-label">Happy Customers</span></div>
+        <div class="hero-stat"><span class="stat-num">24/7</span><span class="stat-label">Customer Support</span></div>
+        <div class="hero-stat"><span class="stat-num">100%</span><span class="stat-label">Secure Payments</span></div>
+      </div>
+    </section>
+
+    <!-- Trust strip -->
+    <div class="trust-strip">
+      <div class="trust-item"><span>🚚</span> Free Delivery</div>
+      <div class="trust-item"><span>🔄</span> Easy Returns</div>
+      <div class="trust-item"><span>🔒</span> Secure Payments</div>
+      <div class="trust-item"><span>💳</span> No-Cost EMI</div>
+      <div class="trust-item"><span>⭐</span> 4.8 Avg Rating</div>
+    </div>
+
+    <!-- Products Section -->
+    <section class="products-section">
+      <div class="section-header">
+        <h2 class="section-title">Featured Products</h2>
+        <p id="products-count" class="products-count"></p>
+      </div>
+      <div class="products-grid" id="products-grid">
+        <!-- Populated by JS -->
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ═══════════════════════════════════════════
+       PAGE: CART
+  ═══════════════════════════════════════════ -->
+  <main id="page-cart" class="page">
+    <div class="page-container">
+      <h2 class="page-title">Your Cart</h2>
+      <div class="cart-layout">
+        <!-- Cart items -->
+        <div class="cart-items" id="cart-items-list">
+          <!-- Populated by JS -->
+        </div>
+        <!-- Order summary -->
+        <aside class="order-summary" id="order-summary">
+          <!-- Populated by JS -->
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <!-- ═══════════════════════════════════════════
+       PAGE: CHECKOUT
+  ═══════════════════════════════════════════ -->
+  <main id="page-checkout" class="page">
+    <div class="page-container">
+      <h2 class="page-title">Checkout</h2>
+      <div class="checkout-layout">
+
+        <!-- Left: Forms -->
+        <div class="checkout-forms">
+
+          <!-- Step 1: Address -->
+          <div class="checkout-card" id="step-address">
+            <div class="step-header">
+              <span class="step-num">1</span>
+              <h3>Delivery Address</h3>
+            </div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Full Name *</label>
+                <input type="text" id="addr-name" placeholder="Ravi Kumar" />
+              </div>
+              <div class="form-group">
+                <label>Phone Number *</label>
+                <input type="tel" id="addr-phone" placeholder="9876543210" maxlength="10" />
+              </div>
+              <div class="form-group full">
+                <label>Address Line 1 *</label>
+                <input type="text" id="addr-line1" placeholder="House No., Street, Area" />
+              </div>
+              <div class="form-group full">
+                <label>Address Line 2</label>
+                <input type="text" id="addr-line2" placeholder="Landmark (optional)" />
+              </div>
+              <div class="form-group">
+                <label>City *</label>
+                <input type="text" id="addr-city" placeholder="Mumbai" />
+              </div>
+              <div class="form-group">
+                <label>State *</label>
+                <select id="addr-state">
+                  <option value="">Select State</option>
+                  <option>Andhra Pradesh</option><option>Assam</option><option>Bihar</option>
+                  <option>Delhi</option><option>Goa</option><option>Gujarat</option>
+                  <option>Haryana</option><option>Karnataka</option><option>Kerala</option>
+                  <option>Madhya Pradesh</option><option>Maharashtra</option><option>Odisha</option>
+                  <option>Punjab</option><option>Rajasthan</option><option>Tamil Nadu</option>
+                  <option>Telangana</option><option>Uttar Pradesh</option><option>West Bengal</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>PIN Code *</label>
+                <input type="text" id="addr-pin" placeholder="400001" maxlength="6" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 2: Payment -->
+          <div class="checkout-card" id="step-payment">
+            <div class="step-header">
+              <span class="step-num">2</span>
+              <h3>Payment Method</h3>
+            </div>
+
+            <!-- Payment options -->
+            <div class="payment-options">
+              <label class="payment-option" onclick="selectPayment('upi')">
+                <input type="radio" name="payment" value="upi" id="pay-upi" />
+                <div class="payment-card">
+                  <span class="pay-icon">📱</span>
+                  <div>
+                    <strong>UPI</strong>
+                    <small>Google Pay, PhonePe, Paytm</small>
+                  </div>
+                </div>
+              </label>
+              <label class="payment-option" onclick="selectPayment('card')">
+                <input type="radio" name="payment" value="card" id="pay-card" />
+                <div class="payment-card">
+                  <span class="pay-icon">💳</span>
+                  <div>
+                    <strong>Credit / Debit Card</strong>
+                    <small>Visa, Mastercard, RuPay</small>
+                  </div>
+                </div>
+              </label>
+              <label class="payment-option" onclick="selectPayment('cod')">
+                <input type="radio" name="payment" value="cod" id="pay-cod" />
+                <div class="payment-card">
+                  <span class="pay-icon">💵</span>
+                  <div>
+                    <strong>Cash on Delivery</strong>
+                    <small>Pay when delivered</small>
+                  </div>
+                </div>
+              </label>
+              <label class="payment-option" onclick="selectPayment('emi')">
+                <input type="radio" name="payment" value="emi" id="pay-emi" />
+                <div class="payment-card">
+                  <span class="pay-icon">📅</span>
+                  <div>
+                    <strong>No-Cost EMI</strong>
+                    <small>Easy monthly instalments</small>
+                  </div>
+                </div>
+              </label>
+            </div>
+
+            <!-- UPI details -->
+            <div class="payment-details" id="detail-upi" style="display:none">
+              <input type="text" id="upi-id" placeholder="yourname@upi (e.g. ravi@gpay)" />
+            </div>
+
+            <!-- Card details -->
+            <div class="payment-details" id="detail-card" style="display:none">
+              <input type="text" id="card-num" placeholder="Card Number (16 digits)" maxlength="19" oninput="formatCard(this)" />
+              <div class="card-row">
+                <input type="text" placeholder="MM / YY" maxlength="5" oninput="formatExpiry(this)" />
+                <input type="text" placeholder="CVV" maxlength="3" />
+              </div>
+              <input type="text" placeholder="Cardholder Name" />
+            </div>
+
+            <!-- EMI details -->
+            <div class="payment-details" id="detail-emi" style="display:none">
+              <p class="emi-label">Choose EMI Plan:</p>
+              <div class="emi-options" id="emi-options">
+                <!-- Populated by JS -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Summary -->
+        <aside class="checkout-summary" id="checkout-summary">
+          <!-- Populated by JS -->
+        </aside>
+      </div>
+
+      <div class="checkout-actions">
+        <button class="btn-secondary" onclick="showPage('cart')">← Back to Cart</button>
+        <button class="btn-primary btn-pay" id="place-order-btn" onclick="placeOrder()">
+          <span id="pay-btn-text">Place Order & Pay</span>
+          <span id="pay-btn-spinner" class="spinner" style="display:none"></span>
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- ═══════════════════════════════════════════
+       PAGE: ORDER CONFIRMATION
+  ═══════════════════════════════════════════ -->
+  <main id="page-confirmation" class="page">
+    <div class="confirmation-wrap">
+      <div class="confetti-container" id="confetti"></div>
+      <div class="confirmation-card">
+        <div class="confirm-icon">✓</div>
+        <h2 class="confirm-title">Order Placed Successfully!</h2>
+        <p class="confirm-sub">Thank you for shopping with ShopSwift</p>
+
+        <div class="confirm-details" id="confirm-details">
+          <!-- Populated by JS -->
+        </div>
+
+        <div class="confirm-timeline">
+          <div class="timeline-item done"><span class="tl-dot"></span><span>Order Confirmed</span></div>
+          <div class="timeline-item"><span class="tl-dot"></span><span>Processing</span></div>
+          <div class="timeline-item"><span class="tl-dot"></span><span>Shipped</span></div>
+          <div class="timeline-item"><span class="tl-dot"></span><span>Delivered</span></div>
+        </div>
+
+        <button class="btn-primary" onclick="continueShopping()">Continue Shopping</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- ═══════════════════════════════════════════
+       TOAST NOTIFICATION
+  ═══════════════════════════════════════════ -->
+  <div class="toast" id="toast"></div>
+
+  <!-- ═══════════════════════════════════════════
+       FOOTER
+  ═══════════════════════════════════════════ -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span class="logo-icon">⚡</span> ShopSwift
+        <p>Your trusted online shopping destination</p>
+      </div>
+      <div class="footer-links">
+        <strong>Help</strong>
+        <a href="#">Shipping Policy</a>
+        <a href="#">Returns</a>
+        <a href="#">Track Order</a>
+        <a href="#">Contact Us</a>
+      </div>
+      <div class="footer-links">
+        <strong>Company</strong>
+        <a href="#">About Us</a>
+        <a href="#">Careers</a>
+        <a href="#">Press</a>
+        <a href="#">Blog</a>
+      </div>
+      <div class="footer-links">
+        <strong>Legal</strong>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Use</a>
+        <a href="#">Cookie Policy</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 ShopSwift. All rights reserved. · Made with ❤️ in India</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
